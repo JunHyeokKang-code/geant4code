@@ -17,9 +17,9 @@ int main(int argc, char** argv)
 {
   G4RunManager* runManager = new G4RunManager;
   
-  G4VModularPhysicsList* physicsList = new QGSP_BERT;
+  G4VModularPhysicsList* physicsList = new QGSP_BERT; //physics 모델 , 원하는 시뮬레이션에 따라 변경 가능
   //runManager -> SetUserInitialization(physicsList);
-  runManager -> SetUserInitialization(new PhysicsList());
+  runManager -> SetUserInitialization(new PhysicsList()); // 각각 코드들 실행
   runManager -> SetUserInitialization(new DetectorConstruction());
   runManager -> SetUserAction(new PrimaryGeneratorAction());
   runManager -> SetUserAction(new RunAction());
@@ -30,7 +30,7 @@ int main(int argc, char** argv)
   G4VisManager* visManager = new G4VisExecutive;
   visManager -> Initialize();
   
-
+//다음은 ui 실행 옵션
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
   if (argc != 1) 
   {
