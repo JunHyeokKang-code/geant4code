@@ -1,7 +1,7 @@
 #include <TGraph.h>
 
 void scatterplot() {
-    TFile *file = new TFile("/home/kjh92/solid/opentutorials_Geant4/build/data.root");
+    TFile *file = new TFile("your_data_file_address"); // 본인 데이터파일 절대경로로 바꿀것!!!
 
     if (!file || file->IsZombie()) {
         cout << "Error opening the file." << endl;
@@ -19,7 +19,7 @@ void scatterplot() {
     ymax = 32.;
     fout.open("data_of_pdglimit.txt");
     TChain *chain = new TChain("step");
-    chain->Add("/home/kjh92/solid/opentutorials_Geant4/build/data.root");
+    chain->Add("your_data_file_address"); // 본인 데이터파일 절대경로로 바꿀것!!!
     chain->SetBranchAddress("eventID", &eventID);
     chain->SetBranchAddress("x", &x);
     chain->SetBranchAddress("y", &y);
