@@ -9,7 +9,7 @@
 
 using namespace std;
 
-void elect(){
+void 1d_histogram(){
     TFile *file = new TFile("/home/kjh92/solid/opentutorials_Geant4/build/data.root");
 
     if (!file || file->IsZombie()) {
