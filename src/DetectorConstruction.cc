@@ -47,13 +47,13 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   PPO -> AddElement(element_H, 1);      //각각의 화학식의 원자 개수
   PPO ->SetChemicalFormula("FLUOR");
   
-  G4double density_bis = 1.3*g/cm3;
-  nelements =2;
-  G4Material* BisMSB = new G4Material("Bis-MSB",density_bis,nelements);
+  G4double density_bis = 1.3*g/cm3; //화합물의 밀도
+  nelements =2; //화합물의 구성원소 개수
+  G4Material* BisMSB = new G4Material("Bis-MSB",density_bis,nelements);//화합물 정의
   //화학속성
   BisMSB->SetChemicalFormula("WLS"); //wavelength shifter
-  BisMSB->AddElement(element_C,24);
-  BisMSB->AddElement(element_H,22);
+  BisMSB->AddElement(element_C,24); //화학식 구성 원소 , 개수
+  BisMSB->AddElement(element_H,22); 
   // PPO 3g/L bis-MSB 30mg/L 
   /*
   G4Material *LS_material = new G4Material("LS", 0.865*g/cm3 , 2, kStateLiquid);
@@ -68,7 +68,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4Material* PS_material = new G4Material("PS",density,3,kStateSolid);
   G4double BisMSB_fraction=0.03*g/(1e3*cm3*density); //0.3 mg/l bis-MSB 비율
   G4double PPO_fraction=3*g/(1e3*cm3*density);
-  PS_material->AddMaterial(Polystyrene, 1 / (1.0+PPO_fraction+BisMSB_fraction) );
+  PS_material->AddMaterial(Polystyrene, 1 / (1.0+PPO_fraction+BisMSB_fraction) ); //비율 설정정
   PS_material->AddMaterial(PPO, PPO_fraction / (1.0+PPO_fraction+BisMSB_fraction) );
   PS_material->AddMaterial(BisMSB, BisMSB_fraction / (1.0+PPO_fraction+BisMSB_fraction) );
   G4Material *copper = new G4Material("copper", 8.96*g/cm3, 1, kStateSolid );
@@ -323,20 +323,20 @@ PS_material->SetMaterialPropertiesTable(MPT);
   G4double PSSizeY = 5*cm;
   G4double PSSizeZ = 30*cm;
 
-  G4Box* PS1Solid = new G4Box("PS_1", PSSizeX/2,PSSizeY/2,PSSizeZ/2); 
-  G4Box* PS2Solid = new G4Box("PS_2", PSSizeX/2,PSSizeY/2,PSSizeZ/2);
-  G4Box* PS3Solid = new G4Box("PS_3", PSSizeX/2,PSSizeY/2,PSSizeZ/2);
-  G4Box* PS4Solid = new G4Box("PS_4", PSSizeX/2,PSSizeY/2,PSSizeZ/2);
+  G4Box* PS1Solid = new G4Box("PS_1", PSSizeX/2,PSSizeY/2,PSSizeZ/2); //사이즈는 객체의 중심에서 설정한 만큼의 거리로  
+  G4Box* PS2Solid = new G4Box("PS_2", PSSizeX/2,PSSizeY/2,PSSizeZ/2); //설정되기 때문에 목표하는 길이의 절반을 기입해야
+  G4Box* PS3Solid = new G4Box("PS_3", PSSizeX/2,PSSizeY/2,PSSizeZ/2); //원하는 크기의 검출기로 설정 가능
+  G4Box* PS4Solid = new G4Box("PS_4", PSSizeX/2,PSSizeY/2,PSSizeZ/2); 
   G4Box* PS5Solid = new G4Box("PS_5", PSSizeX/2,PSSizeY/2,PSSizeZ/2);
   G4Box* PS6Solid = new G4Box("PS_6", PSSizeX/2,PSSizeY/2,PSSizeZ/2);
 //G4Box 에서 모든 길이는 중심 기준으로하는 거리이기 때문에 원하는 size의 반수를 적용시켜야 원하는 사이즈 적용
   
   
-  G4LogicalVolume* logicPS1 = new G4LogicalVolume(PS1Solid,       //its solid
-						     PS_material,	//its material
-						     "1stPS");		//its name
+  G4LogicalVolume* logicPS1 = new G4LogicalVolume(PS1Solid,      //its solid
+						     PS_material,//its material
+						     "1stPS");	//its name
   new G4PVPlacement(0,			                               //no rotation
-		    G4ThreeVector(0,-2.5*cm,0),	                               //at (0,0,0)
+		    G4ThreeVector(0,-2.5*cm,0),	   //객체 중심의 좌표        //at (0,0,0)
 		    "1stPS",		//its name
 		    logicPS1,	//its logical volume
 		    physWorld,		//its mother  volume
@@ -542,7 +542,7 @@ G4LogicalVolume* logicPS6 = new G4LogicalVolume(PS6Solid,       //its solid
 		    false,		//no boolean operation
 		    0);			//copy number
         */
-  //시각화옵션션    
+  //시각화옵션    
   auto visat_world = new G4VisAttributes();
   visat_world -> SetColor(G4Colour(1.,1.,1.,0.4));//R,G,B,투명도 , logical volume 에 적용
   logicWorld -> SetVisAttributes(visat_world);     
