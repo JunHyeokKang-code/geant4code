@@ -10,7 +10,7 @@
 using namespace std;
 
 void 1d_histogram(){
-    TFile *file = new TFile("/home/kjh92/solid/opentutorials_Geant4/build/data.root");
+    TFile *file = new TFile("your_data_file_address"); // 본인 데이터파일 절대주소로 변경할것 !!!
 
     if (!file || file->IsZombie()) {
             cout << "Error opening the file." << endl; //파일이 디렉토리인지 아닌지 검사
@@ -41,7 +41,7 @@ void 1d_histogram(){
         numstep = 0;
         
         TChain* chain = new TChain("step");
-        chain->Add("/home/kjh92/solid/opentutorials_Geant4/build/data.root"); // Add the file to the chain
+        chain->Add("your_data_file_address");  // 본인 데이터파일 절대주소로 변경할것 !!! // Add the file to the chain
         chain->SetBranchAddress("x", &x);
         chain->SetBranchAddress("y", &y);
         chain->SetBranchAddress("z", &z);
