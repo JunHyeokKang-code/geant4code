@@ -1,23 +1,27 @@
-#include <TFile.h>
-#include <TTree.h>
-#include <TCanvas.h>
 #include <TGraph.h>
 
 void scatterPlot() {
-    TFile *file = new TFile(" input data file link ");
+    TFile *file = new TFile("/home/kjh92/solid/opentutorials_Geant4/build/data.root");
 
     if (!file || file->IsZombie()) {
-        std::cerr << "Error opening the file." << std::endl;
+        cout << "Error opening the file." << endl;
         return;
     }
 
-    double_t x, y, z ,dx,dy,dz,dr,delta_E,kin_E,ptot,prepx,prepy,prepz,stepLength,xp,yp,zp,track_total; 
-    int pdgcode, trackid, stepnum,eventID,stepNumber;
-    int sum, dEdx,mean, trackmax,posteventid;
+    double_t init_E,x,xmin,stoppingPower,xmax,ymin,ymax, y, z, dx, dy, dz, dr, delta_E, kin_E, ptot, prepx, prepy, prepz, stepLength, xp, yp, zp, track_total;
+    int pdgcode, trackid, stepnum,  eventID, stepNumber, parentid;
+    int sum, dEdx, mean, trackmax, posteventid;
     double steptot = 0;
-    TChain* chain = new TChain("step");
-    chain->Add("< input data file link >"); // 데이터 파일에서 데이터 로드
-    chain->SetBranchAddress("x", &x); // 원하는 데이터 불러오기
+    ofstream fout;
+    xmin = 0.1;
+    xmax = 100000.0;
+    ymin = 8.;
+    ymax = 32.;
+    fout.open("data_of_pdglimit.txt");
+    TChain *chain = new TChain("step");
+    chain->Add("/home/kjh92/solid/opentutorials_Geant4/build/data.root");
+    chain->SetBranchAddress("eventID", &eventID);
+    chain->SetBranchAddress("x", &x);
     chain->SetBranchAddress("y", &y);
     chain->SetBranchAddress("z", &z);
     chain->SetBranchAddress("delta_E", &delta_E);
@@ -28,55 +32,52 @@ void scatterPlot() {
     chain->SetBranchAddress("prepx", &prepx);
     chain->SetBranchAddress("prepy", &prepy);
     chain->SetBranchAddress("prepz", &prepz);
-    chain->SetBranchAddress("xp", &xp);
-    chain->SetBranchAddress("yp", &yp);
-    chain->SetBranchAddress("zp", &zp);
-    chain->SetBranchAddress("track_total",&track_total);
-    chain->SetBranchAddress("eventID" ,&eventID);
-    chain->SetBranchAddress("stepnumber" ,&stepNumber);
-    double_t r;
-    // 큰 TCanvas를 생성하여 그래프 크기를 키웁니다.
-    TCanvas* canvas = new TCanvas("canvas", "Scatter Plot Canvas", 800, 600); // 캔버스 크기 설정
+    chain->SetBranchAddress("track_total", &track_total);
+    chain->SetBranchAddress("eventID", &eventID);
+    chain->SetBranchAddress("stepnumber", &stepNumber);
+    chain->SetBranchAddress("parentid", &parentid);
+    chain->SetBranchAddress("stoppingPower", &stoppingPower);
+    
+    stepnum = 0;
+    TGraph *graph = new TGraph();
+    graph->SetName("momentum - dEdx scatter plot 40000event ~40GeV");
+    graph->SetTitle("Scatter Plot;Momentum (MeV/c);-dE/dl (MeV/cm)");
 
-    TGraph* scatterPlot = new TGraph(chain->GetEntries()); // 각각의 포인트 표시
-    stepnum = 0; // 초기화
-    for (Long64_t i = 0; i < chain->GetEntries(); ++i) {   // for 문을 통한 엔트리 로드   
+    for (Long64_t i = 0; i < chain->GetEntries(); ++i) {
         chain->GetEntry(i);
-        if(pdgcode = 13, trackid = 1){ // 조건 설정을 통한 데이터 필터링
-        steptot = steptot + stepLength;
-        r = sqrt(x*x + y*y+z*z);
-        dx = x - xp;
-        dy = y - yp;
-        dz = z - zp;
-        dr = sqrt(dx*dx + dy*dy + dz*dz);
-        ptot = sqrt(prepx*prepx + prepy*prepy + prepz*prepz);
-        //scatterPlot->SetPoint(i, ptot, -delta_E/stepLength);
-
-        /*if(stepnum == 10){
-        cout<<i<<'\t'<<eventID<<'\t'<<stepnum<<endl;
         
-        }*/
-        stepnum++;
-        if(kin_E == 0 && stepnum>10){
-            scatterPlot->SetPoint(i, ptot, -delta_E/stepLength); // 캔버스에 포인트 기록
-            stepnum = 0; // stepnumber 초기화
-            //cout<<z<<endl;
+        if (parentid == 0) {
+            
+           
+            if (stepnum == 1) {
+                ptot = sqrt(prepx * prepx + prepy * prepy + prepz * prepz);
+                //std::cout<<delta_E<<std::endl;
+                graph->SetPoint(graph->GetN(), kin_E/1000,stoppingPower/1000);
+                //std::cout<<kin_E/1000<<'\t'<<-delta_E/1000<<std::endl;
+                //std::cout<<kin_E/1000<<std::endl;
             }
+            //graph->SetPoint(graph->GetN(), ptot, -(delta_E / stepLength)*1000);
+            
+            stepnum++;
+            if(kin_E == 0){
+                stepnum =0 ;
+            }
+           
         }
     }
 
-    gPad->SetLogx(); // x 축 로그스케일
-    gPad->SetLogy(); // y 축 로그스케일
-    gStyle->SetOptStat(); // status window
-    scatterPlot->SetTitle("Scatter Plot"); // 제목 설정
-    scatterPlot->GetXaxis()->SetTitle("energy"); // x축 이름 설정
-    scatterPlot->GetYaxis()->SetTitle("dE/dx"); // y축 이름 설정
+    fout << endl;
+    fout.close();
 
-    scatterPlot->SetMarkerStyle(1); // 마커 스타일
-    scatterPlot->SetMarkerColor(kBlack); // 검은색으로 설정
-    scatterPlot->SetMarkerSize(0.01); // 작은 크기
-    scatterPlot->SetMarkerColorAlpha(kBlack,1.0);
-    scatterPlot->Draw("AP"); // "AP"는 포인트 축을 모두 그림
+    TCanvas *canvas = new TCanvas("canvas", "TGraph Canvas");
+    canvas->SetLogx();
+    //canvas->SetLogy();
+    graph->SetStats(1);
+    graph->SetMarkerStyle(1); // 마커 스타일 설정
+    graph->SetMarkerSize(0.5); // 마커 크기 설정
+    graph->GetXaxis()->SetRangeUser(xmin, xmax);  // x축 범위 설정
+    graph->GetYaxis()->SetRangeUser(ymin, ymax);  // x축 범위 설정
+    graph->Draw("AP"); // "AP" 옵션을 사용하여 점과 선(또는 마커)을 함께 표시
 
-    canvas->SaveAs("scatter_plot.png"); //이미지 파일로 저장
+    canvas->Print("scatter_Plot.png");
 }
