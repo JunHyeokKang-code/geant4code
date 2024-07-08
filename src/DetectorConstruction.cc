@@ -169,7 +169,7 @@ MPT_LAB->AddProperty("ABSORPTIONEFFICIENCY", photonEnergy, absorptionEfficiencyV
 
 
 
-// constant property table 매질의 특성중 상수인 값 설정
+// constant property table 매질의 특성중 상수인 값 설정 ( 구성물질특성 )
 
 // Optical Properties ( 광학적 특성 )
 
@@ -287,7 +287,7 @@ PS_material->SetMaterialPropertiesTable(MPT);
   // -----------------------------------------------------
   // World
   // WORLD VOLUME*/
-
+  // 외부환경설정정
   //G4Material* world_mat = nist -> FindOrBuildMaterial("G4_Galactic");
   //현재 구획에서는 world. 즉 내가 만든 검출기의 외부 환경의 index들을 넣어주는 부분
   G4Material* world_mat = nist -> FindOrBuildMaterial("G4_Galactic"); //진공
@@ -317,7 +317,7 @@ PS_material->SetMaterialPropertiesTable(MPT);
 //Physical Volume은 Logical Volume을 실제 공간 내의 특정 위치에 배치하는 역할
 //위치와 방향, 회전및 이동 변환, 계층구조 구성
 
-// plastic scintillator array
+// plastic scintillator array ( 검출기설정 )
 
   G4double PSSizeX = 30*cm;
   G4double PSSizeY = 5*cm;
@@ -500,7 +500,7 @@ G4LogicalVolume* logicPS6 = new G4LogicalVolume(PS6Solid,       //its solid
   */      
 
 
-/*  //LS Chamber
+/*  //LS Chamber (수조)
   G4double TargetSizeX_basket =  750*cm;
   G4double TargetSizeY_basket =  600*cm; 
   G4double TargetSizeZ_basket =  6000*cm; 
@@ -509,7 +509,7 @@ G4LogicalVolume* logicPS6 = new G4LogicalVolume(PS6Solid,       //its solid
 				 TargetSizeX_basket/2,TargetSizeY_basket/2,TargetSizeZ_basket/2);   //its size
          */
 /*
-//LS Liquid
+//LS Liquid (액상)
   G4double TargetSizeX =  749*cm;
   G4double TargetSizeY =  599*cm; 
   G4double TargetSizeZ =  5999*cm; 
@@ -542,7 +542,7 @@ G4LogicalVolume* logicPS6 = new G4LogicalVolume(PS6Solid,       //its solid
 		    false,		//no boolean operation
 		    0);			//copy number
         */
-      
+  //시각화옵션션    
   auto visat_world = new G4VisAttributes();
   visat_world -> SetColor(G4Colour(1.,1.,1.,0.4));//R,G,B,투명도 , logical volume 에 적용
   logicWorld -> SetVisAttributes(visat_world);     
@@ -597,30 +597,4 @@ G4LogicalVolume* logicPS6 = new G4LogicalVolume(PS6Solid,       //its solid
   */
   /*return physWorld;*/
  
- //copper
- /*G4double TargetSizeX =  750*cm;
-  G4double TargetSizeY =  600*cm; 
-  G4double TargetSizeZ =  6000*cm; 
-
-  G4Box* targetSolid = new G4Box("Target",				     //its name
-				 TargetSizeX/2,TargetSizeY/2,TargetSizeZ/2);   //its size
-  
-  //G4VSolid array_2 = new G4SubtractionSolid("LSarray",basketSolid,targetLiquid,0,G4ThreeVector(0.5*cm,0,0));
-
-  G4LogicalVolume* logicTarget = new G4LogicalVolume(targetSolid,       //its solid
-						     copper,	//its material
-						     "copper");		//its name
-  
-  new G4PVPlacement(0,			                               //no rotation
-		    G4ThreeVector(0.,0.,3000.1*cm),	                               //at (0,0,0)
-		    "Target",		//its name
-		    logicTarget,	//its logical volume
-		   physWorld,		//its mother  volume
-		    false,		//no boolean operation
-		    0);			//copy number
-        
-  auto visat_Target = new G4VisAttributes();
-  visat_Target -> SetColor(G4Colour(0.8,0.8,0.8,0.6));//R,G,B,투명도
-  logicTarget -> SetVisAttributes(visat_Target);
-  return physWorld;*/
 }
